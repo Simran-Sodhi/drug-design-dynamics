@@ -31,3 +31,4 @@ if __name__ == "__main__":
 
     # Call the function and print results as JSON
     subsets = categorize_datasets(file_name, attribute_name)
+    print(json.dumps(subsets))  # <-- Ensure the JSON is printed
