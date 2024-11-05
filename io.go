@@ -5,9 +5,7 @@ import (
 	"log"
 	"os/exec"
 	"strings"
-
-	// "gonum.org/v1/hdf5"
-	"github.com/sbinet/go-hdf5"
+	"gonum.org/v1/hdf5"
 )
 
 /*
@@ -697,22 +695,45 @@ func GetFeatures(file, datasetName, AttributeName string) ([]int, [][][]float32,
 
 }
 
+/* Example for usage:
+
 func main() {
 
-	// fileName := "pubchem-1-2500.hdf5"
-	// attributeName := "subset"
 
-	// categories, err := categorizeDatasets(fileName, attributeName)
-	// if err != nil {
-	// 	log.Fatalf("Failed to categorize datasets: %v", err)
-	// }
+	// check CategorizeDatasets()
+ 
+	fileName := "SPICE-2.0.1.hdf5"
+	attributeName := "subset"
 
-	// // Print the categorized datasets
-	// for category, datasets := range categories {
-	// 	fmt.Printf("Category: %s\n", category)
-	// 	for _, dataset := range datasets {
-	// 		fmt.Printf("  - Dataset: %s\n", dataset)
-	// 	}
-	// }
+	// get a map whose key is subsets names, and value is dataset names who fall into the subset
+	subsetMap := CategorizeDatasets(fileName, attributeName)
+
+	// print and check the map
+	for key, val := range subsetMap {
+		fmt.Print(key, val[:5])
+	}
+
+	///////////////////////////////////////////
+
+	// check GetFeatures()
+	atomic_numbers, conformations, dft_total_energy, dft_total_gradient, formation_energy, mayer_indices, mbis_charges, mbis_dipoles, mbis_octupoles, mbis_quadrupoles, scf_dipole, scf_quadrupole, smiles, wiberg_lowdin_indices := GetFeatures("103915086")
+
+	// print to check whether the data has been correctly inputed
+	fmt.Println(atomic_numbers[0])
+	fmt.Println(conformations[0][0][0])
+	fmt.Println(dft_total_energy[0])
+	fmt.Println(dft_total_gradient[0][0][0])
+	fmt.Println(formation_energy[0])
+	fmt.Println(mayer_indices[1][1][10])
+	fmt.Println(mbis_charges[0][0][0])
+	fmt.Println(mbis_dipoles[0][0][0])
+	fmt.Println(mbis_octupoles[0][0][0][0][0])
+	fmt.Println(mbis_quadrupoles[0][0][0])
+	fmt.Println(scf_dipole[0][0])
+	fmt.Println(mbis_charges[0][0][0])
+	fmt.Println(scf_quadrupole[0][0][0])
+	fmt.Println(wiberg_lowdin_indices[1][1][10])
+	fmt.Println(smiles)
 
 }
+*/
