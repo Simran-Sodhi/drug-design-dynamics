@@ -29,8 +29,11 @@ import (
 // Metropolis acceptance criterion
 func AcceptMove(currentEnergy, newEnergy, temperature float64) bool {
 	if newEnergy < currentEnergy {
+		// fmt.Println("Identifying as less:", newEnergy)
 		return true
 	}
+	// fmt.Println("Identifying as more")
+	// fmt.Println(newEnergy)
 	deltaE := newEnergy - currentEnergy
 	probability := math.Exp(-deltaE / temperature)
 	return rand.Float64() < probability
@@ -49,14 +52,16 @@ func CalculateEnergy(protein, ligand Molecule) float64 {
 	energy := 0.0
 	for _, atomP := range protein.atoms {
 		for _, atomL := range ligand.atoms {
-			distance := math.Sqrt(math.Pow(atomP.X-atomL.X, 2) + math.Pow(atomP.Y-atomL.Y, 2) + math.Pow(atomP.Z-atomL.Z, 2))
+			atomPPos := atomP.Position
+			atomLPos := atomL.Position
+			distance := math.Sqrt(math.Pow(atomPPos.X-atomLPos.X, 2) + math.Pow(atomPPos.Y-atomLPos.Y, 2) + math.Pow(atomPPos.Z-atomLPos.Z, 2))
 			energy += K * (atomP.Charge * atomL.Charge) / distance //kQ1,Q2/d^2
 		}
 	}
 	return energy
 }
 
-func MonteCarloSimulation(protein, ligand Molecule, iterations int, temperature float64) Molecule {
+func SimulateEnergyMinimization(protein, ligand Molecule, iterations int, temperature float64) Molecule {
 	currentLigand := ligand
 	currentEnergy := CalculateEnergy(protein, currentLigand)
 
@@ -69,4 +74,38 @@ func MonteCarloSimulation(protein, ligand Molecule, iterations int, temperature 
 		}
 	}
 	return currentLigand
+}
+
+func SimulateEnergyMinimizationParallel(protein, ligand Molecule, iterations int, temperature float64, numProcs int) Molecule {
+	currentLigand := ligand
+	currentEnergy := CalculateEnergy(protein, currentLigand)
+	width := iterations / numProcs
+	c := make(chan Molecule)
+	for i := 0; i < numProcs; i++ {
+		go SimulateEnergyMinimizationOneProc(protein, currentLigand, width, temperature, c)
+	}
+	for i := 0; i < numProcs; i++ {
+		newLigand := <-c
+		newEnergy := CalculateEnergy(protein, newLigand)
+		//fmt.Println(newEnergy)
+		if AcceptMove(currentEnergy, newEnergy, temperature) {
+			currentLigand = newLigand
+			currentEnergy = newEnergy
+		}
+	}
+	return currentLigand
+}
+
+func SimulateEnergyMinimizationOneProc(protein, ligand Molecule, iterations int, temperature float64, c chan Molecule) {
+	currentLigand := ligand
+	currentEnergy := CalculateEnergy(protein, currentLigand)
+	for i := 0; i < iterations; i++ {
+		newLigand := PerturbLigand(currentLigand)
+		newEnergy := CalculateEnergy(protein, newLigand)
+		if AcceptMove(currentEnergy, newEnergy, temperature) {
+			currentLigand = newLigand
+			currentEnergy = newEnergy
+		}
+	}
+	c <- currentLigand
 }
