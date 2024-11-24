@@ -2,11 +2,11 @@
 <br>
 
 #### I made some changes to the main.go in the monteCarlo folder for input data from Rshiny;
-####Also, I changed the num of iterations to make the process faster for app!
+#### Also, I changed the num of iterations to make the process faster for app!
 
 <br>
 
-### First, set your working directory to currentDir:
+#### Need to set the working directory to currentDir:
 
 |-- currentDir
 
@@ -22,7 +22,7 @@
 
 <br>
 
-### please also notice format of output file (can also see /simulations.csv/ in github):
+#### please also notice format of output file (can also see /simulations.csv/ in github):
 
 BindingEnergy
 
