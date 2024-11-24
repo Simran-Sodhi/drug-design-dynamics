@@ -18,7 +18,7 @@
 
 
 
-### Second, mention format of output file (can also see /simulations.csv/ in github):
+### please also notice format of output file (can also see /simulations.csv/ in github):
 
 BindingEnergy
 
