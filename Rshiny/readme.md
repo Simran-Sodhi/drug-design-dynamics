@@ -1,7 +1,7 @@
-Here is the draft of our Rshiny! Please help to find the problems!
+### Here is the draft of our Rshiny! Please help to find the problems!
 
 
-First, set your working directory to currentDir:
+### First, set your working directory to currentDir:
 
 |-- currentDir
 
@@ -18,7 +18,7 @@ First, set your working directory to currentDir:
 
 
 
-Second, mention format of output file (can also see /simulations.csv/ in github):
+### Second, mention format of output file (can also see /simulations.csv/ in github):
 
 BindingEnergy
 
