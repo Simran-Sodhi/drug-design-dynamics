@@ -34,7 +34,7 @@ BindingEnergy
 
 -50041433.277568
 
-
+<br>
 
 Here is the example output:
 <img width="900" alt="截屏2024-11-23 18 52 39" src="https://github.com/user-attachments/assets/c9c2c905-7d44-4403-9acc-8cbf9e5f8bd2">
