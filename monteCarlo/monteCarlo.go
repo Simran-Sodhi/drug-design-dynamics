@@ -109,3 +109,52 @@ func SimulateEnergyMinimizationOneProc(protein, ligand Molecule, iterations int,
 	}
 	c <- currentLigand
 }
+
+func SimulateMultipleLigands(protein Molecule, ligands []Molecule, iterations int, temperature float64, numProcs int) ([]Molecule, []float64) {
+	minEnergy := make([]float64, len(ligands))
+	minLigands := make([]Molecule, len(ligands))
+	for i, ligand := range ligands {
+		minLigands[i] = SimulateEnergyMinimizationParallel(protein, ligand, iterations, temperature, numProcs)
+		minEnergy[i] = CalculateEnergy(protein, minLigands[i])
+	}
+	return minLigands, minEnergy
+}
+
+func SimulateMultipleLigandsParallel(protein Molecule, ligands []Molecule, iterations int, temperature float64, numProcs int) ([]Molecule, []float64) {
+	minEnergy := make([]float64, 0)
+	minLigands := make([]Molecule, 0)
+	ligandChannels := make([]chan []Molecule, numProcs)
+	energyChannels := make([]chan []float64, numProcs)
+	for i := range ligandChannels {
+		ligandChannels[i] = make(chan []Molecule, len(ligands))
+		energyChannels[i] = make(chan []float64, len(ligands))
+	}
+	width := len(ligands) / numProcs
+	for i := 0; i < numProcs; i++ {
+		startIndex := i * width
+		var endIndex int
+		if i != numProcs-1 {
+			endIndex = startIndex + width
+		} else {
+			endIndex = len(ligands)
+		}
+		go SimulateLigandMinimizationOneProc(protein, ligands[startIndex:endIndex], iterations, temperature, ligandChannels[i], energyChannels[i], numProcs)
+	}
+	for i := 0; i < numProcs; i++ {
+		minEnergy = append(minEnergy, <-energyChannels[i]...)
+		minLigands = append(minLigands, <-ligandChannels[i]...)
+	}
+	return minLigands, minEnergy
+}
+
+func SimulateLigandMinimizationOneProc(protein Molecule, ligands []Molecule, iterations int, temperature float64, ligandChannel chan []Molecule, energyChannel chan []float64, numProcs int) ([]Molecule, []float64) {
+	minEnergy := make([]float64, len(ligands))
+	minLigands := make([]Molecule, len(ligands))
+	for i, ligand := range ligands {
+		minLigands[i] = SimulateEnergyMinimizationParallel(protein, ligand, iterations, temperature, numProcs)
+		minEnergy[i] = CalculateEnergy(protein, minLigands[i])
+	}
+	ligandChannel <- minLigands
+	energyChannel <- minEnergy
+	return minLigands, minEnergy
+}
