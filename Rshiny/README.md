@@ -1,15 +1,6 @@
-Introduction to our R shiny app:
-
-1. two Protein-Ligand Interaction simulation methods were provided in our app: Monte Carlo and Machine Learning:
-  
-      
-2. NOTICE:
-  a. All other external data should be put under folder either ./MCdata or ./MLdata (like the example).
-  b. remember to set your Python path at Line 241 in app.R to ensure that the ML python script can be executed.
-
 # R shiny
 
-A paragraph containing a high-level description of the project, main features and remarks.
+Interactive web app for predicting protein-ligand interations by evaluating their binding energies using Monte Carlo and machine learning simulations method.
 
 ## Requirements
 
