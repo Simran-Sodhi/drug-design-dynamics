@@ -14,3 +14,8 @@ type Atom struct {
 type Position3d struct {
 	X, Y, Z float64
 }
+
+type MultipleLigandSimulationOutput struct {
+	Ligand []Molecule
+	Energy []float64
+}

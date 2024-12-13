@@ -15,7 +15,7 @@ func main() {
 
 	// }
 	//ligandList := [4]string{dir + "/1a0i_ligand.mol2", dir + "/1a4h_ligand.mol2", dir + "/1ajp_ligand.mol2", dir + "/1gi8_ligand.mol2"}
-	ligandFiles = ligandFiles[:200]
+	ligandFiles = ligandFiles[:30]
 	ligands := make([]Molecule, len(ligandFiles))
 	//ligand, err := ParseMol2("Data/Ligands/ligand_charged.mol2")
 	for i := range ligandFiles {
@@ -33,26 +33,27 @@ func main() {
 	Check(err2)
 	//fmt.Println(len(protein.atoms))
 	iterations := 3000
+	//3000
 	temperature := 310.15
 	numProcs := runtime.NumCPU()
 	//fmt.Println("Old Energy", CalculateEnergy(protein, ligand))
 	//newLigand := SimulateEnergyMinimization(protein, ligand, iterations, temperature)
 	start := time.Now()
-	_, energyList := SimulateMultipleLigands(protein, ligands, iterations, temperature, numProcs)
+	minLigands, energyList := SimulateMultipleLigandsParallel(protein, ligands, iterations, temperature, numProcs)
 	end := time.Since(start)
 	fmt.Println("Time taken: ", end)
-	// minIndex := 0
-	// minEnergy := 0.0
-	// for i, energy := range energyList {
-	// 	if energy < minEnergy {
-	// 		minIndex = i
-	// 		minEnergy = energy
-	// 	}
-	// }
-	// minLigands[minIndex].SaveToMol2("minLigand_" + proteinFile)
+	minIndex := 0
+	minEnergy := 0.0
+	for i, energy := range energyList {
+		if energy < minEnergy {
+			minIndex = i
+			minEnergy = energy
+		}
+	}
+	//minLigands[minIndex].SaveToMol2("minLigand_" + proteinFile)
 	//dir+"/"+
-	// err3 := UpdateMol2Coordinates(ligandFiles[minIndex], "minLigand_"+proteinFile, minLigands[minIndex])
-	// Check(err3)
+	err3 := UpdateMol2Coordinates(ligandFiles[minIndex], "minLigand_"+proteinFile, minLigands[minIndex])
+	Check(err3)
 	// fmt.Println(energyList)
 	// start2 := time.Now()
 	// //newLigand2 := SimulateEnergyMinimizationParallel(protein, ligands[0], iterations, temperature, numProcs)
