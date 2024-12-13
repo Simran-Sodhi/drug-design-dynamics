@@ -8,9 +8,9 @@
    git clone https://github.com/Simran-Sodhi/drug-design-dynamics.git
 
 
-## Folder Structure
-PLAS20K/: Contains datasets related to the PLAS20K project.
-Rshiny/: Scripts and resources for the R Shiny application.
-SPICE/: Data and scripts pertaining to the SPICE project.
-machineLearning/: Machine learning models and training scripts.
-metropolisMethod/: Implementation of the Metropolis algorithm.
+## Project Structure
+- `PLAS20K/`: Contains datasets related to the PLAS20K project  
+- `Rshiny/`: Scripts and resources for the R Shiny application  
+- `SPICE/`: Data and parsing scripts pertaining to the SPICE project  
+- `machineLearning/`: Machine learning models and training scripts  
+- `metropolisMethod/`: Implementation of the Metropolis algorithm  
