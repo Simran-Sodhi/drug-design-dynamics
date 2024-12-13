@@ -33,13 +33,14 @@ func main() {
 	Check(err2)
 	//fmt.Println(len(protein.atoms))
 	iterations := 3000
+	rotate := true
 	//3000
 	temperature := 310.15
 	numProcs := runtime.NumCPU()
 	//fmt.Println("Old Energy", CalculateEnergy(protein, ligand))
 	//newLigand := SimulateEnergyMinimization(protein, ligand, iterations, temperature)
 	start := time.Now()
-	minLigands, energyList := SimulateMultipleLigandsParallel(protein, ligands, iterations, temperature, numProcs)
+	minLigands, energyList := SimulateMultipleLigandsParallel(protein, ligands, iterations, rotate, temperature, numProcs)
 	end := time.Since(start)
 	fmt.Println("Time taken: ", end)
 	minIndex := 0
