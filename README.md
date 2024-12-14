@@ -3,6 +3,8 @@
 
 ## Installation
 
+## Recorded Code demo available at: https://drive.google.com/drive/folders/1g_GTiWV2_l0lUbO9OTQ9euYVeeyWyaBW?usp=drive_link
+
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/Simran-Sodhi/drug-design-dynamics.git
