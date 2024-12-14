@@ -7,7 +7,6 @@
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/Simran-Sodhi/drug-design-dynamics.git
-2. **To run the R shiny app**
 ## R shiny
 
 Interactive web app for predicting protein-ligand interations by evaluating their binding energies using Metropolis and machine learning simulations method.
