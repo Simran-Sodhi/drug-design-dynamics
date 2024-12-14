@@ -37,7 +37,7 @@ The app takes protein-ligand interaction dataset (.csv file) as input,<br />you 
 - `PLAS20K/`: Contains datasets related to the PLAS20K project  
 - `Rshiny/`: Scripts and resources for the R Shiny application  
 - `SPICE/`: Data and parsing scripts pertaining to the SPICE project  // we are not using this data anymore
-- `machineLearning/`: Machine learning models and training scripts  
+- `machineLearningMethods/`: Machine learning models and training scripts  
 - `metropolisMethod/`: Implementation of the Metropolis algorithm  
 
 
