@@ -12,6 +12,9 @@ func SimulateMultipleLigands(protein Molecule, ligands []Molecule, iterations in
 	minEnergy := make([]float64, len(ligands))
 	minLigands := make([]Molecule, len(ligands))
 	for i, ligand := range ligands {
+		ligands[i] = ShiftLigandCloserByThreshold(ligand, protein, THRESHOLD)
+	}
+	for i, ligand := range ligands {
 		minLigands[i] = SimulateEnergyMinimizationParallel(protein, ligand, iterations, rotate, temperature, numProcs)
 		minEnergy[i] = CalculateEnergy(protein, minLigands[i])
 	}
@@ -69,14 +72,12 @@ func SimulateLigandMinimizationOneProc(protein Molecule, ligands []Molecule, ite
 func SimulateEnergyMinimization(protein, ligand Molecule, iterations int, rotate bool, temperature float64) Molecule {
 	currentLigand := ligand
 	currentEnergy := CalculateEnergy(protein, currentLigand)
-	minDistance := 1.5
-	maxAngle := 0.79 //radians = ~45 degrees
 	for i := 0; i < iterations; i++ {
 		var newLigand Molecule
 		if rotate {
-			newLigand = JitterAndRotateLigand(currentLigand, minDistance, maxAngle)
+			newLigand = JitterAndRotateLigand(currentLigand, MINDISTANCE, MAXANGLE)
 		} else {
-			newLigand = JitterLigand(currentLigand, minDistance)
+			newLigand = JitterLigand(currentLigand, MINDISTANCE)
 		}
 		newEnergy := CalculateEnergy(protein, newLigand)
 		if AcceptMove(currentEnergy, newEnergy, temperature) {
@@ -115,19 +116,20 @@ func SimulateEnergyMinimizationParallel(protein, ligand Molecule, iterations int
 func SimulateEnergyMinimizationOneProc(protein, ligand Molecule, iterations int, rotate bool, temperature float64, c chan Molecule) {
 	currentLigand := ligand
 	currentEnergy := CalculateEnergy(protein, currentLigand)
-	minDistance := 1.5
-	maxAngle := 0.79 //radians = ~45 degrees
 	for i := 0; i < iterations; i++ {
 		var newLigand Molecule
+		prevLigand := CopyLigand(currentLigand)
 		if rotate {
-			newLigand = JitterAndRotateLigand(currentLigand, minDistance, maxAngle)
+			newLigand = JitterAndRotateLigand(currentLigand, MINDISTANCE, MAXANGLE)
 		} else {
-			newLigand = JitterLigand(currentLigand, minDistance)
+			newLigand = JitterLigand(currentLigand, MINDISTANCE)
 		}
 		newEnergy := CalculateEnergy(protein, newLigand)
 		if AcceptMove(currentEnergy, newEnergy, temperature) {
 			currentLigand = newLigand
 			currentEnergy = newEnergy
+		} else {
+			currentLigand = prevLigand
 		}
 	}
 	c <- currentLigand
@@ -178,13 +180,14 @@ func JitterAndRotateLigand(ligand Molecule, minDistance float64, maxAngle float6
 		if isCollisionFree(newLigand, minDistance) {
 			return newLigand
 		}
-
 	}
 }
 
+// RotateLigand rotates the ligand around a random axis by a random angle within the specified maxAngle.
+// Input: a Molecule ligand, a float64 maxAngle
+// Output: a rotated Molecule ligand
 func RotateLigand(ligand Molecule, maxAngle float64) Molecule {
 	newLigand := ligand
-
 	// Randomly choose rotation axis
 	axis := Position3d{
 		X: rand.Float64()*2 - 1,
@@ -204,6 +207,9 @@ func RotateLigand(ligand Molecule, maxAngle float64) Molecule {
 	return newLigand
 }
 
+// RotateAtom rotates a 3D position around a specified axis by an angle using Rodrigues' rotation formula.
+// Input: a Position3d pos, a Position3d axis, a float64 theta
+// Output: a rotated Position3d
 func RotateAtom(pos, axis Position3d, theta float64) Position3d {
 	cosTheta := math.Cos(theta)
 	sinTheta := math.Sin(theta)
@@ -245,28 +251,84 @@ func CalculateEnergy(protein, ligand Molecule) float64 {
 			atomPPos := atomP.Position
 			atomLPos := atomL.Position
 			distance := math.Sqrt(math.Pow(atomPPos.X-atomLPos.X, 2) + math.Pow(atomPPos.Y-atomLPos.Y, 2) + math.Pow(atomPPos.Z-atomLPos.Z, 2))
+			// to ensure non-zero
+			if distance < 1e-6 {
+				distance = 1e-6
+			}
 			energy += K * (atomP.Charge * atomL.Charge) / distance //kQ1,Q2/d^2
 		}
 	}
 	return energy
 }
 
-// Normalize scales the vector to have a magnitude of 1
-func (v *Position3d) Normalize() {
-	mag := v.Magnitude()
-	if mag > 0 {
-		v.X /= mag
-		v.Y /= mag
-		v.Z /= mag
+// ShiftLigandCloserByThreshold shifts the ligand closer to the protein if its closest atom distance exceeds the threshold.
+// Input: a Molecule ligand, a Molecule protein, a float64 threshold
+// Output: a shifted Molecule ligand
+func ShiftLigandCloserByThreshold(ligand, protein Molecule, threshold float64) Molecule {
+	closestDistance, ligandAtom, proteinAtom := FindClosestAtomDistance(ligand, protein)
+	if closestDistance > threshold {
+		// Calculate shift vector
+		shiftVector := Position3d{
+			X: proteinAtom.X - ligandAtom.X,
+			Y: proteinAtom.Y - ligandAtom.Y,
+			Z: proteinAtom.Z - ligandAtom.Z,
+		}
+		// Normalize shift vector and scale to close the gap
+		shiftVector.Normalize()
+		shiftVector = shiftVector.Scale(closestDistance - threshold)
+		// Apply the shift to the entire ligand
+		for i := range ligand.atoms {
+			ligand.atoms[i].Position = ligand.atoms[i].Position.Add(shiftVector)
+		}
 	}
+	return ligand
 }
 
-// Magnitude calculates the vector's magnitude
-func (v Position3d) Magnitude() float64 {
-	return math.Sqrt(v.X*v.X + v.Y*v.Y + v.Z*v.Z)
+// FindClosestAtomDistance finds the minimum distance and the corresponding atom positions between the ligand and the protein.
+// Input: a Molecule ligand, a Molecule protein
+// Output: a float64 minimum distance and corresponding closest atom positions
+func FindClosestAtomDistance(ligand, protein Molecule) (float64, Position3d, Position3d) {
+	minDistance := math.MaxFloat64
+	var ligandAtomPos, proteinAtomPos Position3d
+	for _, ligAtom := range ligand.atoms {
+		for _, protAtom := range protein.atoms {
+			dist := Distance(ligAtom.Position, protAtom.Position)
+			if dist < minDistance {
+				minDistance = dist
+				ligandAtomPos = ligAtom.Position
+				proteinAtomPos = protAtom.Position
+			}
+		}
+	}
+	return minDistance, ligandAtomPos, proteinAtomPos
 }
 
-// Dot calculates the dot product between two vectors
-func (v Position3d) Dot(other Position3d) float64 {
-	return v.X*other.X + v.Y*other.Y + v.Z*other.Z
+// Distance calculates the Euclidean distance between two 3D vectors.
+// Input: two Position3d vectors a and b
+// Output: a float64 distance
+func Distance(a, b Position3d) float64 {
+	dx := a.X - b.X
+	dy := a.Y - b.Y
+	dz := a.Z - b.Z
+	return math.Sqrt(dx*dx + dy*dy + dz*dz)
+}
+
+// CopyLigand creates a deep copy of the given ligand to avoid reference sharing.
+// Input: a Molecule ligand
+// Output: a deep copy of the Molecule ligand
+func CopyLigand(ligand Molecule) Molecule {
+	newAtoms := make([]Atom, len(ligand.atoms))
+	for i, atom := range ligand.atoms {
+		newAtoms[i] = Atom{
+			Position: Position3d{
+				X: atom.Position.X,
+				Y: atom.Position.Y,
+				Z: atom.Position.Z,
+			},
+			Charge: atom.Charge,
+		}
+	}
+	return Molecule{
+		atoms: newAtoms,
+	}
 }

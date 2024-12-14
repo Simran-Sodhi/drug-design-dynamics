@@ -3,18 +3,16 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
-
-	"gonum.org/v1/plot"
-	"gonum.org/v1/plot/plotter"
-	"gonum.org/v1/plot/vg"
 )
 
-func parsePDB(filename string) (Molecule, error) {
+// ParsePDB parses a PDB file to extract atomic coordinates and charges, returning a Molecule containing the parsed atoms.
+// Input: a string filename
+// Output: a Molecule and an error
+func ParsePDB(filename string) (Molecule, error) {
 	file, err := os.Open(filename)
 	molecule := Molecule{}
 	if err != nil {
@@ -46,6 +44,9 @@ func parsePDB(filename string) (Molecule, error) {
 	return molecule, nil
 }
 
+// ParseMol2 parses a MOL2 file, extracting atomic information from the ATOM section, including coordinates and charges, and returns a Molecule.
+// Input: a string filename
+// Output: a Molecule and an error
 func ParseMol2(filename string) (Molecule, error) {
 	file, err := os.Open(filename)
 	molecule := Molecule{}
@@ -104,8 +105,9 @@ func ParseMol2(filename string) (Molecule, error) {
 	return molecule, nil
 }
 
-//func getProteinAndLigands(id string)
-
+// SaveToMol2 saves the current Molecule to a MOL2 file, writing its atoms with default properties such as type and substructure information.
+// Input: a string filename
+// Output: an error or nil
 func (m *Molecule) SaveToMol2(filename string) error {
 	file, err := os.Create(filename)
 	Check(err)
@@ -134,101 +136,9 @@ func (m *Molecule) SaveToMol2(filename string) error {
 	return nil
 }
 
-func UpdateMol2Coordinates(originalFile, updatedFile string, newMolecule Molecule) error {
-	// Open the original file
-	file, err := os.Open(originalFile)
-	if err != nil {
-		return fmt.Errorf("failed to open file: %v", err)
-	}
-	defer file.Close()
-
-	// Create the updated file
-	output, err := os.Create(updatedFile)
-	if err != nil {
-		return fmt.Errorf("failed to create output file: %v", err)
-	}
-	defer output.Close()
-
-	scanner := bufio.NewScanner(file)
-	writer := bufio.NewWriter(output)
-
-	atomIndex := 0
-	inAtomSection := false
-
-	for scanner.Scan() {
-		line := scanner.Text()
-
-		// Check if we're in the ATOM section
-		if strings.HasPrefix(line, "@<TRIPOS>ATOM") {
-			inAtomSection = true
-			writer.WriteString(line + "\n")
-			continue
-		} else if strings.HasPrefix(line, "@<TRIPOS>") && inAtomSection {
-			// Exit ATOM section
-			inAtomSection = false
-		}
-
-		if inAtomSection && atomIndex < len(newMolecule.atoms) {
-			// Update the atom line with new coordinates
-			parts := strings.Fields(line)
-			if len(parts) >= 9 {
-				atom := newMolecule.atoms[atomIndex]
-				parts[2] = fmt.Sprintf("%.4f", atom.Position.X) // X coordinate
-				parts[3] = fmt.Sprintf("%.4f", atom.Position.Y) // Y coordinate
-				parts[4] = fmt.Sprintf("%.4f", atom.Position.Z) // Z coordinate
-				writer.WriteString(strings.Join(parts, " ") + "\n")
-				atomIndex++
-			} else {
-				writer.WriteString(line + "\n")
-			}
-		} else {
-			// Copy other lines as is
-			writer.WriteString(line + "\n")
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		return fmt.Errorf("error reading file: %v", err)
-	}
-
-	if atomIndex != len(newMolecule.atoms) {
-		return fmt.Errorf("mismatch between number of atoms in molecule and file")
-	}
-
-	writer.Flush()
-	return nil
-}
-
-func plotEnergy(x []string, y []float64) {
-
-	points := make(plotter.XYs, len(x))
-	for i := range x {
-		points[i].X = float64(i) // Numeric representation of X
-		points[i].Y = y[i]
-	}
-
-	// Create a new plot
-	p := plot.New()
-
-	// Set plot title and axis labels
-	p.Title.Text = "Energy of various ligands"
-	p.Y.Label.Text = "Protein Ligand Binding Energy"
-
-	// Add a line to the plot
-	line, err := plotter.NewLine(points)
-	Check(err)
-	p.Add(line)
-
-	// Customize the X-axis with string labels
-	p.NominalX(x...)
-
-	// Save the plot to a file
-	err2 := p.Save(6*vg.Inch, 4*vg.Inch, "line_plot_strings.png")
-	Check(err2)
-
-	log.Println("Line plot saved as line_plot_strings.png")
-}
-
+// findFilesWithSubstring searches for files in the specified root directory that contain the given substring in their filenames and returns a list of matching file paths.
+// Input: a string rootDir, a string searchString
+// Output: a slice of strings containing matching file paths, and an error or nil
 func findFilesWithSubstring(rootDir, searchString string) ([]string, error) {
 	var matchingFiles []string
 
