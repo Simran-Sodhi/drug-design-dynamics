@@ -1,6 +1,0 @@
-# Ignore Data folder
-metropolisMethod/Data
-
-# Ignore mod and sum files
-go.sum
-go.mod
