@@ -10,7 +10,6 @@ Interactive web app for predicting protein-ligand interations by evaluating thei
 ## Usage
 
 - Metropolis:<br />
-<br />
 Tha app takes one protein file (.pdb/.mol2) and multiple ligand files (.mol2 files uploaded together in a directory) as input,<br />after successfully uploaded the data, hit "Run Simulation" button, and you will get:<br />
   <br />
   (1) the plot of all protein-ligand pairs' binding energies<br />
@@ -19,7 +18,6 @@ Tha app takes one protein file (.pdb/.mol2) and multiple ligand files (.mol2 fil
    <br />
       
 - Machine Learning:<br />
-<br />
 The app takes protein-ligand interaction dataset (.csv file) as input,<br />you can then select features you are interested in from ["electrostatic", "polar_solvation", "non_polar_solvation", "vdW"],<br />and select models you would like to use from ["RandomForest", "DecisionTree", "XGBoost", "LightGBM", "SVM"],<br />after successfully uploaded the data and selected the parameters, hit "Run Simulation" button, and you will get:<br />
   <br />
   (1) the evalution matrix of all models (evalution method includes: MSE, RMSE, MAE, R2, MAPE)<br />
