@@ -42,7 +42,7 @@ The app takes protein-ligand interaction dataset (.csv file) as input,<br />you 
 
 
 ## To download input data for Metropolis simulation from PLAS20K
-#### Input extended_PLAS20K.csv:
+#### Input: extended_PLAS20K.csv
 - usePDBnames.go to extract all the pdb_id of protein-ligand complex used in PLAS20K (stored in PLAS20K_pdb_ids.txt)
 - use batch_download.sh to grab all the pdb files from RSCB
 - use splitPDB.go to seperate proteins and ligands (output two pdb files for proteins and ligands)
