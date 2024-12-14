@@ -10,10 +10,10 @@ Interactive web app for predicting protein-ligand interations by evaluating thei
 ## Usage
 
 a. Monte Carlo:<br />
-      Tha app takes one protein file (.pdb/.mol2) and multiple ligand files (.mol2 files uploaded together in a directory) as input,<br />
-      - after successfully uploaded the data, hit "Run Simulation" button, and you will get:<br />
-      - the plot of all protein-ligand pairs' binding energies,<br />
-            the structure of protein-ligand pair with minimum binding energy shown (need to preprocess the output protein and ligand file (.mol2) using Chimera or PyMOL to generate the video and save as ./output/results.mp4).<br />
+- Tha app takes one protein file (.pdb/.mol2) and multiple ligand files (.mol2 files uploaded together in a directory) as input,<br />
+- after successfully uploaded the data, hit "Run Simulation" button, and you will get:<br />
+  (1) the plot of all protein-ligand pairs' binding energies,<br />
+  (2) the structure of protein-ligand pair with minimum binding energy shown (need to preprocess the output protein and ligand file (.mol2) using Chimera or PyMOL to generate the video and save as ./output/results.mp4).<br />
    
       Example dataset stored in folder ./MCdata.
       
