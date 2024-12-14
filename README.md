@@ -47,3 +47,9 @@ The app takes protein-ligand interaction dataset (.csv file) as input,<br />you 
 - use batch_download.sh to grab all the pdb files from RSCB
 - use splitPDB.go to seperate proteins and ligands (output two pdb files for proteins and ligands)
 - use convert_pdb_to_mol2.sh (calls Open Babel) to convert all pdb files to mol2 files.
+
+## Running the metropolis simulation from the code itself
+- You can use the metropolisMethod/main.go to run the metropolis simulation
+- You need to provide data in metropolisMethod/Data. Some sample data is present there
+- In main.go there are three options: one to simulate multiple ligands RunMultipleLigands(), one to get RMSD values: TestMethodRMSD() and the third for the R Shiny app: RShinyAppMain(args []string)
+- All the outputs go into the metropolisMethod/Output folder
