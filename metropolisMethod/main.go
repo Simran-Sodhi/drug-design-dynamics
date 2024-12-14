@@ -13,8 +13,8 @@ import (
 )
 
 func main() {
-	TestMethodRMSD()
-	//RunMultipleLigands()
+	//TestMethodRMSD()
+	RunMultipleLigands()
 	//RShinyAppMain(os.Args)
 }
 
@@ -118,7 +118,7 @@ func TestMethodRMSD() {
 	iterations := 1000
 	rotate := false
 	numProcs := runtime.NumCPU()
-	numProteins := 50
+	numProteins := 2
 	MultipleProteinRMSD(dir, iterations, rotate, numProteins, numProcs)
 }
 
@@ -129,14 +129,14 @@ func RunMultipleLigands() {
 	iterations := 3000
 	rotate := true
 	numProcs := runtime.NumCPU()
-	ligandFiles = ligandFiles[:30]
+	ligandFiles = ligandFiles[:5]
 	ligands := make([]Molecule, len(ligandFiles))
 	for i := range ligandFiles {
 		ligand, err := ParseMol2(ligandFiles[i])
 		Check(err)
 		ligands[i] = ligand
 	}
-	proteinFile := "1a99_protein.mol2"
+	proteinFile := "223l_protein.mol2"
 	protein, err2 := ParseMol2(dir + "/" + proteinFile)
 	Check(err2)
 	fmt.Println("Starting simulation")
