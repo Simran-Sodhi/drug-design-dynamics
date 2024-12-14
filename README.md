@@ -1,6 +1,6 @@
 # drug-design-dynamics
 
-### Recorded Code demo available at: https://drive.google.com/drive/folders/1g_GTiWV2_l0lUbO9OTQ9euYVeeyWyaBW?usp=drive_link
+## Recorded Code demo available at: https://drive.google.com/drive/folders/1g_GTiWV2_l0lUbO9OTQ9euYVeeyWyaBW?usp=drive_link
 
 ## Installation
 
