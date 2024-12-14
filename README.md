@@ -6,9 +6,9 @@
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/Simran-Sodhi/drug-design-dynamics.git
-
+2. 
 **To run the R shiny app**
-# R shiny
+## R shiny
 
 Interactive web app for predicting protein-ligand interations by evaluating their binding energies using Metropolis and machine learning simulations method.
 
@@ -40,3 +40,14 @@ The app takes protein-ligand interaction dataset (.csv file) as input,<br />you 
 - `SPICE/`: Data and parsing scripts pertaining to the SPICE project  // we are not using this data anymore
 - `machineLearning/`: Machine learning models and training scripts  
 - `metropolisMethod/`: Implementation of the Metropolis algorithm  
+
+
+## To download input data for Metropolis simulation from PLAS20K
+# Input extended_PLAS20K.csv:
+#### usePDBnames.go to extract all the pdb_id of protein-ligand complex used in PLAS20K (stored in PLAS20K_pdb_ids.txt)
+#### use batch_download.sh to grab all the pdb files from RSCB
+#### use splitPDB.go to seperate proteins and ligands (output two pdb files for proteins and ligands)
+#### use convert_pdb_to_mol2.sh (calls Open Babel) to convert all pdb files to mol2 files.
+
+
+#### mol2 files were send using Google Drive.
