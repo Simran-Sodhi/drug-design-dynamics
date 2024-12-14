@@ -1,9 +1,5 @@
 # drug-design-dynamics
 
-## Recorded Code demo available at: 
-
-https://drive.google.com/drive/folders/1g_GTiWV2_l0lUbO9OTQ9euYVeeyWyaBW?usp=drive_link
-
 ## Installation
 
 1. **Clone the repository:**
@@ -55,3 +51,8 @@ The app takes protein-ligand interaction dataset (.csv file) as input,<br />you 
 - You need to provide data in metropolisMethod/Data. Some sample data is present there
 - In main.go there are three options: one to simulate multiple ligands RunMultipleLigands(), one to get RMSD values: TestMethodRMSD() and the third for the R Shiny app: RShinyAppMain(args []string)
 - All the outputs go into the metropolisMethod/Output folder
+
+## Recorded Code demo available at: 
+
+https://drive.google.com/drive/folders/1g_GTiWV2_l0lUbO9OTQ9euYVeeyWyaBW?usp=drive_link
+
