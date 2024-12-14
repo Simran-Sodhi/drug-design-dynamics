@@ -159,7 +159,7 @@ func JitterLigand(ligand Molecule, minDistance float64) Molecule {
 			newLigand.atoms[i].Position.Y += (rand.Float64() - 0.5) * 0.1
 			newLigand.atoms[i].Position.Z += (rand.Float64() - 0.5) * 0.1
 		}
-		if isCollisionFree(newLigand, minDistance) {
+		if IsCollisionFree(newLigand, minDistance) {
 			return newLigand
 		}
 
@@ -177,7 +177,7 @@ func JitterAndRotateLigand(ligand Molecule, minDistance float64, maxAngle float6
 			newLigand.atoms[i].Position.Y += (rand.Float64() - 0.5) * 0.1
 			newLigand.atoms[i].Position.Z += (rand.Float64() - 0.5) * 0.1
 		}
-		if isCollisionFree(newLigand, minDistance) {
+		if IsCollisionFree(newLigand, minDistance) {
 			return newLigand
 		}
 	}
@@ -223,10 +223,10 @@ func RotateAtom(pos, axis Position3d, theta float64) Position3d {
 	return Position3d{X: x, Y: y, Z: z}
 }
 
-// isCollisionFree checks for atomic collisions in the ligand based on a minimum allowed distance.
+// IsCollisionFree checks for atomic collisions in the ligand based on a minimum allowed distance.
 // Input: a Molecule ligand, a float64 minimum distance
 // Output: a bool indicating if the ligand is collision-free
-func isCollisionFree(ligand Molecule, minDistance float64) bool {
+func IsCollisionFree(ligand Molecule, minDistance float64) bool {
 	for i := 0; i < len(ligand.atoms); i++ {
 		for j := i + 1; j < len(ligand.atoms); j++ {
 			dx := ligand.atoms[i].Position.X - ligand.atoms[j].Position.X

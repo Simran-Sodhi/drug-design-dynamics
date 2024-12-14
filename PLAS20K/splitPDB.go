@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func main() {
+func splitPDB() {
 	outputDir := "./PDB_splitted"
 
 	pdbs := ReadDirectory("./PDB_origional")
@@ -21,12 +21,6 @@ func main() {
 		WriteProtein(inputFile, outputDir)
 		WriteLigand(inputFile, outputDir)
 	}
-
-	// for test
-	// inputFile := "./PDBdata/1a4h.pdb.gz"
-
-	// WriteProtein(inputFile, outputDir)
-	// WriteLigand(inputFile, outputDir)
 }
 
 func ReadDirectory(dir string) []fs.DirEntry {

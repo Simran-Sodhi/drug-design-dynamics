@@ -13,7 +13,7 @@ import (
 // Output: none (prints the average RMSD and generates an RMSD curve plot)
 func MultipleProteinRMSD(dir string, iterations int, rotate bool, numProteins int, numProcs int) {
 	proteinFiles, err := findFilesWithSubstring(dir, "protein")
-	proteinFiles = proteinFiles[50 : numProteins+50]
+	proteinFiles = proteinFiles[0:numProteins]
 	proteinLabels := make([]string, len(proteinFiles))
 	Check(err)
 	rmsd := make([]float64, len(proteinFiles))
