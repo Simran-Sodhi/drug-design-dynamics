@@ -9,7 +9,7 @@ Interactive web app for predicting protein-ligand interations by evaluating thei
 
 ## Usage
 
-a. Monte Carlo:
+a. Monte Carlo:<br />
       - Tha app takes one protein file (.pdb/.mol2) and multiple ligand files (.mol2 files uploaded together in a directory) as input,
       - after successfully uploaded the data, hit "Run Simulation" button, and you will get:
       (1) the plot of all protein-ligand pairs' binding energies,
