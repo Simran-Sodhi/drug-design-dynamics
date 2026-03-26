@@ -1,4 +1,4 @@
-# drug-design-dynamics
+# Simulation + ML methods for protein–ligand interaction analysis
 
 ## Installation
 
