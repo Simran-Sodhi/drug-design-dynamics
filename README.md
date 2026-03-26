@@ -1,4 +1,5 @@
 # Simulation + ML methods for protein–ligand interaction analysis
+**Combines molecular simulation, feature extraction, and predictive modeling into a unified pipeline for analyzing binding interactions.**
 
 ## Installation
 
