@@ -1,4 +1,4 @@
-# Simulation + ML methods for protein–ligand interaction analysis
+# End-to-end system for protein–ligand interaction prediction using Metropolis simulations and machine learning models.
 **Combines molecular simulation, feature extraction, and predictive modeling into a unified pipeline for analyzing binding interactions.**
 
 ## Installation
